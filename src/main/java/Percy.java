@@ -64,7 +64,7 @@ public class Percy {
                 System.out.println("  [ ] " + tasks[index].getDescription());
                 System.out.println(line);
             } else if (input.startsWith("todo ")) {
-                // Display type of task property
+                // Marking Task as Todo
                 String description = input.substring(5);
                 tasks[taskCount] = new Todo(description);
                 taskCount++;
@@ -73,7 +73,20 @@ public class Percy {
                 System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
                 System.out.println("Now you have " + taskCount + " tasks in the list.");
                 System.out.println(line);
-            }   else {
+            }  else if (input.startsWith("deadline ")) {
+                // Marking task as deadline
+                String details = input.substring(9);
+                String[] parts = details.split(" /by ", 2);
+                String description = parts[0];
+                String by = parts[1];
+                tasks[taskCount] = new Deadline(description, by);
+                taskCount++;
+                System.out.println(line);
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
+                System.out.println("Now you have " + taskCount + " tasks in the list.");
+                System.out.println(line);
+            } else {
                 // Store the input into a list
                 tasks[taskCount] = new Task(input);
                 taskCount++;

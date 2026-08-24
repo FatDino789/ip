@@ -3,7 +3,6 @@ public class Todo extends Task {
         super(description);
     }
 
-    // Static override
     @Override
     public String getTypeIcon() {
         return "[T]";
