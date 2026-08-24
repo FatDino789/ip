@@ -21,6 +21,10 @@ public class Percy {
         System.out.println("What can I do for you?");
         System.out.println(line);
 
+        // Initialize the list to store users input
+        String[] tasks = new String[100];
+        int taskCount = 0;
+
         // Continuously prompt until the user inputs bye
         while (true) {
             // Take in the user's input
@@ -32,11 +36,21 @@ public class Percy {
                 System.out.println("Bye. Hope to see you again soon!");
                 System.out.println(line);
                 break;
+            } else if (input.equals("list")) {
+                // Output the list when input is list
+                System.out.println(line);
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println((i + 1) + ". " + tasks[i]);
+                }
+                System.out.println(line);
+            } else {
+                // Store the input into a list
+                tasks[taskCount] = input;
+                taskCount++;
+                System.out.println(line);
+                System.out.println("added: " + input);
+                System.out.println(line);
             }
-
-            System.out.println(line);
-            System.out.println(input);
-            System.out.println(line);
         }
     }
 }
