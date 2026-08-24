@@ -58,6 +58,15 @@ public class Percy {
                 System.out.println("Nice! I've marked this task as done:");
                 System.out.println("  [X] " + tasks[index]);
                 System.out.println(line);
+            } else if (input.startsWith("unmark ")) {
+                // Introduce the unmark function to unmark tasks as complete
+                int taskNum = Integer.parseInt(input.substring(7));
+                int index = taskNum - 1;
+                isDone[index] = false;
+                System.out.println(line);
+                System.out.println("OK, I've marked this task as not done yet:");
+                System.out.println("  [ ] " + tasks[index]);
+                System.out.println(line);
             } else {
                 // Store the input into a list
                 tasks[taskCount] = input;
