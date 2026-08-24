@@ -17,6 +17,7 @@ public class Percy {
         String input;
 
         System.out.println(banner);
+        System.out.println("Hello! I'm Percy.");
         System.out.println("What can I do for you?");
         System.out.println(line);
 
