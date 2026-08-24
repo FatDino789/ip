@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Percy {
     public static void main(String[] args) {
@@ -22,8 +23,7 @@ public class Percy {
         System.out.println(line);
 
         // Initialize the list of tasks
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         // Continuously prompt until the user inputs bye
         while (true) {
@@ -41,28 +41,57 @@ public class Percy {
                 System.out.println(line);
                 System.out.println("Here are the tasks in your list:");
                 // Add the indication for task completion
-                for (int i = 0; i < taskCount; i++) {
-                    System.out.println((i + 1) + "." + tasks[i].getTypeIcon() + tasks[i].getStatusIcon() + " " + tasks[i].getDescription());
+                for (int i = 0; i < tasks.size(); i++) {
+                    System.out.println((i + 1) + "." + tasks.get(i).getTypeIcon() + tasks.get(i).getStatusIcon() + " " + tasks.get(i).getDescription());
                 }
                 System.out.println(line);
             } else if (input.startsWith("mark ")) {
                 // Introduce the mark function to mark tasks as complete
                 int taskNum = Integer.parseInt(input.substring(5));
                 int index = taskNum - 1;
-                tasks[index].markDone();
+                tasks.get(index).markDone();
                 System.out.println(line);
                 System.out.println("Nice! I've marked this task as done:");
-                System.out.println("  [X] " + tasks[index].getDescription());
+                System.out.println("  " + tasks.get(index).getTypeIcon() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription());
                 System.out.println(line);
             } else if (input.startsWith("unmark ")) {
                 // Introduce the unmark function to unmark tasks as complete
                 int taskNum = Integer.parseInt(input.substring(7));
                 int index = taskNum - 1;
-                tasks[index].unmarkDone();
+                tasks.get(index).unmarkDone();
                 System.out.println(line);
                 System.out.println("OK, I've marked this task as not done yet:");
-                System.out.println("  [ ] " + tasks[index].getDescription());
+                System.out.println("  " + tasks.get(index).getTypeIcon() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription());
                 System.out.println(line);
+            } else if (input.equals("delete") || input.startsWith("delete ")) {
+                // Handling task deletion
+                String numberText = input.length() > 6 ? input.substring(7).trim() : "";
+                if (numberText.isEmpty()) {
+                    System.out.println(line);
+                    System.out.println("OOPS!!! Please specify which task number to delete.");
+                    System.out.println(line);
+                } else {
+                    try {
+                        int taskNum = Integer.parseInt(numberText);
+                        int index = taskNum - 1;
+                        if (index < 0 || index >= tasks.size()) {
+                            System.out.println(line);
+                            System.out.println("OOPS!!! That task number doesn't exist.");
+                            System.out.println(line);
+                        } else {
+                            Task removed = tasks.remove(index);
+                            System.out.println(line);
+                            System.out.println("Noted. I've removed this task:");
+                            System.out.println("  " + removed.getTypeIcon() + removed.getStatusIcon() + " " + removed.getDescription());
+                            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                            System.out.println(line);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println(line);
+                        System.out.println("OOPS!!! Please enter a valid task number.");
+                        System.out.println(line);
+                    }
+                }
             } else if (input.equals("todo") || input.startsWith("todo ")) {
                 // Marking Task as Todo
                 String description = input.length() > 4 ? input.substring(5).trim() : "";
@@ -72,12 +101,11 @@ public class Percy {
                     System.out.println("OOPS!!! The description of a todo cannot be empty.");
                     System.out.println(line);
                 } else {
-                    tasks[taskCount] = new Todo(description);
-                    taskCount++;
+                    tasks.add(new Todo(description));
                     System.out.println(line);
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
-                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("  " + tasks.get(tasks.size() - 1).getTypeIcon() + tasks.get(tasks.size() - 1).getStatusIcon() + " " + tasks.get(tasks.size() - 1).getDescription());
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(line);
                 }
             }  else if (input.equals("deadline") || input.startsWith("deadline ")) {
@@ -92,12 +120,11 @@ public class Percy {
                     String[] parts = details.split(" /by ", 2);
                     String description = parts[0];
                     String by = parts[1];
-                    tasks[taskCount] = new Deadline(description, by);
-                    taskCount++;
+                    tasks.add(new Deadline(description, by));
                     System.out.println(line);
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
-                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("  " + tasks.get(tasks.size() - 1).getTypeIcon() + tasks.get(tasks.size() - 1).getStatusIcon() + " " + tasks.get(tasks.size() - 1).getDescription());
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(line);
                 }
             } else if (input.equals("event") || input.startsWith("event ")) {
@@ -114,12 +141,11 @@ public class Percy {
                     String[] toParts = fromParts[1].split(" /to ", 2);
                     String from = toParts[0];
                     String to = toParts[1];
-                    tasks[taskCount] = new Event(description, from, to);
-                    taskCount++;
+                    tasks.add(new Event(description, from, to));
                     System.out.println(line);
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
-                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("  " + tasks.get(tasks.size() - 1).getTypeIcon() + tasks.get(tasks.size() - 1).getStatusIcon() + " " + tasks.get(tasks.size() - 1).getDescription());
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(line);
                 }
             } else {
