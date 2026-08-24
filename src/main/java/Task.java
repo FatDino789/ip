@@ -23,4 +23,9 @@ public class Task {
     public String getDescription() {
         return description;
     }
+
+    // Method to be overriden by subclass
+    public String getTypeIcon() {
+        return "";
+    }
 }

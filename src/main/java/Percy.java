@@ -42,7 +42,7 @@ public class Percy {
                 System.out.println("Here are the tasks in your list:");
                 // Add the indication for task completion
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println((i + 1) + "." + tasks[i].getStatusIcon() + " " + tasks[i].getDescription());
+                    System.out.println((i + 1) + "." + tasks[i].getTypeIcon() + tasks[i].getStatusIcon() + " " + tasks[i].getDescription());
                 }
                 System.out.println(line);
             } else if (input.startsWith("mark ")) {
@@ -63,7 +63,17 @@ public class Percy {
                 System.out.println("OK, I've marked this task as not done yet:");
                 System.out.println("  [ ] " + tasks[index].getDescription());
                 System.out.println(line);
-            } else {
+            } else if (input.startsWith("todo ")) {
+                // Display type of task property
+                String description = input.substring(5);
+                tasks[taskCount] = new Todo(description);
+                taskCount++;
+                System.out.println(line);
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
+                System.out.println("Now you have " + taskCount + " tasks in the list.");
+                System.out.println(line);
+            }   else {
                 // Store the input into a list
                 tasks[taskCount] = new Task(input);
                 taskCount++;
