@@ -63,50 +63,69 @@ public class Percy {
                 System.out.println("OK, I've marked this task as not done yet:");
                 System.out.println("  [ ] " + tasks[index].getDescription());
                 System.out.println(line);
-            } else if (input.startsWith("todo ")) {
+            } else if (input.equals("todo") || input.startsWith("todo ")) {
                 // Marking Task as Todo
-                String description = input.substring(5);
-                tasks[taskCount] = new Todo(description);
-                taskCount++;
-                System.out.println(line);
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
-                System.out.println("Now you have " + taskCount + " tasks in the list.");
-                System.out.println(line);
-            }  else if (input.startsWith("deadline ")) {
+                String description = input.length() > 4 ? input.substring(5).trim() : "";
+                // Error tracking if no input after Todo
+                if (description.isEmpty()) {
+                    System.out.println(line);
+                    System.out.println("OOPS!!! The description of a todo cannot be empty.");
+                    System.out.println(line);
+                } else {
+                    tasks[taskCount] = new Todo(description);
+                    taskCount++;
+                    System.out.println(line);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
+                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(line);
+                }
+            }  else if (input.equals("deadline") || input.startsWith("deadline ")) {
                 // Marking task as deadline
-                String details = input.substring(9);
-                String[] parts = details.split(" /by ", 2);
-                String description = parts[0];
-                String by = parts[1];
-                tasks[taskCount] = new Deadline(description, by);
-                taskCount++;
-                System.out.println(line);
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
-                System.out.println("Now you have " + taskCount + " tasks in the list.");
-                System.out.println(line);
-            } else if (input.startsWith("event ")) {
+                String details = input.length() > 8 ? input.substring(9).trim() : "";
+                // Error tracing if no input after deadline
+                if (details.isEmpty()) {
+                    System.out.println(line);
+                    System.out.println("OOPS!!! The description of a deadline cannot be empty.");
+                    System.out.println(line);
+                } else {
+                    String[] parts = details.split(" /by ", 2);
+                    String description = parts[0];
+                    String by = parts[1];
+                    tasks[taskCount] = new Deadline(description, by);
+                    taskCount++;
+                    System.out.println(line);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
+                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(line);
+                }
+            } else if (input.equals("event") || input.startsWith("event ")) {
                 // Marking task as event
-                String details = input.substring(6);
-                String[] fromParts = details.split(" /from ", 2);
-                String description = fromParts[0];
-                String[] toParts = fromParts[1].split(" /to ", 2);
-                String from = toParts[0];
-                String to = toParts[1];
-                tasks[taskCount] = new Event(description, from, to);
-                taskCount++;
-                System.out.println(line);
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
-                System.out.println("Now you have " + taskCount + " tasks in the list.");
-                System.out.println(line);
+                String details = input.length() > 5 ? input.substring(6).trim() : "";
+                // Error track
+                if (details.isEmpty()) {
+                    System.out.println(line);
+                    System.out.println("OOPS!!! The description of an event cannot be empty.");
+                    System.out.println(line);
+                } else {
+                    String[] fromParts = details.split(" /from ", 2);
+                    String description = fromParts[0];
+                    String[] toParts = fromParts[1].split(" /to ", 2);
+                    String from = toParts[0];
+                    String to = toParts[1];
+                    tasks[taskCount] = new Event(description, from, to);
+                    taskCount++;
+                    System.out.println(line);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
+                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(line);
+                }
             } else {
-                // Store the input into a list
-                tasks[taskCount] = new Task(input);
-                taskCount++;
+                // Other inputs and commands now return error
                 System.out.println(line);
-                System.out.println("added: " + input);
+                System.out.println("OOPS!!! I'm sorry, but I don't know what that means :-(");
                 System.out.println(line);
             }
         }
