@@ -86,6 +86,21 @@ public class Percy {
                 System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
                 System.out.println("Now you have " + taskCount + " tasks in the list.");
                 System.out.println(line);
+            } else if (input.startsWith("event ")) {
+                // Marking task as event
+                String details = input.substring(6);
+                String[] fromParts = details.split(" /from ", 2);
+                String description = fromParts[0];
+                String[] toParts = fromParts[1].split(" /to ", 2);
+                String from = toParts[0];
+                String to = toParts[1];
+                tasks[taskCount] = new Event(description, from, to);
+                taskCount++;
+                System.out.println(line);
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + tasks[taskCount - 1].getTypeIcon() + tasks[taskCount - 1].getStatusIcon() + " " + tasks[taskCount - 1].getDescription());
+                System.out.println("Now you have " + taskCount + " tasks in the list.");
+                System.out.println(line);
             } else {
                 // Store the input into a list
                 tasks[taskCount] = new Task(input);
