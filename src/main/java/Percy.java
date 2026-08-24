@@ -21,12 +21,9 @@ public class Percy {
         System.out.println("What can I do for you?");
         System.out.println(line);
 
-        // Initialize the list to store users input
-        String[] tasks = new String[100];
+        // Initialize the list of tasks
+        Task[] tasks = new Task[100];
         int taskCount = 0;
-
-        // Tracking list to see which tasks have been completed
-        boolean[] isDone = new boolean[100];
 
         // Continuously prompt until the user inputs bye
         while (true) {
@@ -45,31 +42,30 @@ public class Percy {
                 System.out.println("Here are the tasks in your list:");
                 // Add the indication for task completion
                 for (int i = 0; i < taskCount; i++) {
-                    String status = isDone[i] ? "[X]" : "[ ]";
-                    System.out.println((i + 1) + "." + status + " " + tasks[i]);
+                    System.out.println((i + 1) + "." + tasks[i].getStatusIcon() + " " + tasks[i].getDescription());
                 }
                 System.out.println(line);
             } else if (input.startsWith("mark ")) {
                 // Introduce the mark function to mark tasks as complete
                 int taskNum = Integer.parseInt(input.substring(5));
                 int index = taskNum - 1;
-                isDone[index] = true;
+                tasks[index].markDone();
                 System.out.println(line);
                 System.out.println("Nice! I've marked this task as done:");
-                System.out.println("  [X] " + tasks[index]);
+                System.out.println("  [X] " + tasks[index].getDescription());
                 System.out.println(line);
             } else if (input.startsWith("unmark ")) {
                 // Introduce the unmark function to unmark tasks as complete
                 int taskNum = Integer.parseInt(input.substring(7));
                 int index = taskNum - 1;
-                isDone[index] = false;
+                tasks[index].unmarkDone();
                 System.out.println(line);
                 System.out.println("OK, I've marked this task as not done yet:");
-                System.out.println("  [ ] " + tasks[index]);
+                System.out.println("  [ ] " + tasks[index].getDescription());
                 System.out.println(line);
             } else {
                 // Store the input into a list
-                tasks[taskCount] = input;
+                tasks[taskCount] = new Task(input);
                 taskCount++;
                 System.out.println(line);
                 System.out.println("added: " + input);
