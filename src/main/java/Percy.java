@@ -25,6 +25,9 @@ public class Percy {
         String[] tasks = new String[100];
         int taskCount = 0;
 
+        // Tracking list to see which tasks have been completed
+        boolean[] isDone = new boolean[100];
+
         // Continuously prompt until the user inputs bye
         while (true) {
             // Take in the user's input
@@ -39,9 +42,21 @@ public class Percy {
             } else if (input.equals("list")) {
                 // Output the list when input is list
                 System.out.println(line);
+                System.out.println("Here are the tasks in your list:");
+                // Add the indication for task completion
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println((i + 1) + ". " + tasks[i]);
+                    String status = isDone[i] ? "[X]" : "[ ]";
+                    System.out.println((i + 1) + "." + status + " " + tasks[i]);
                 }
+                System.out.println(line);
+            } else if (input.startsWith("mark ")) {
+                // Introduce the mark function to mark tasks as complete
+                int taskNum = Integer.parseInt(input.substring(5));
+                int index = taskNum - 1;
+                isDone[index] = true;
+                System.out.println(line);
+                System.out.println("Nice! I've marked this task as done:");
+                System.out.println("  [X] " + tasks[index]);
                 System.out.println(line);
             } else {
                 // Store the input into a list
