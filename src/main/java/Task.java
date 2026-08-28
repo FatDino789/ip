@@ -28,4 +28,20 @@ public class Task {
     public String getTypeIcon() {
         return "";
     }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public String getRawDescription() {
+        return description;
+    }
+
+    public String getTypeLetter() {
+        return "";
+    }
+
+    public String toFileFormat() {
+        return getTypeLetter() + " | " + (isDone() ? "1" : "0") + " | " + getRawDescription();
+    }
 }
