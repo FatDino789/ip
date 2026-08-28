@@ -54,7 +54,7 @@ public class Storage {
             } else if (type.equals("D")) {
                 task = new Deadline(description, LocalDate.parse(parts[3]));
             } else if (type.equals("E")) {
-                task = new Event(description, parts[3], parts[4]);
+                task = new Event(description, LocalDate.parse(parts[3]), LocalDate.parse(parts[4]));
             } else {
                 return null;
             }

@@ -154,14 +154,23 @@ public class Percy {
                     String[] fromParts = details.split(" /from ", 2);
                     String description = fromParts[0];
                     String[] toParts = fromParts[1].split(" /to ", 2);
-                    String from = toParts[0];
-                    String to = toParts[1];
-                    tasks.add(new Event(description, from, to));
-                    System.out.println(line);
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks.get(tasks.size() - 1).getTypeIcon() + tasks.get(tasks.size() - 1).getStatusIcon() + " " + tasks.get(tasks.size() - 1).getDescription());
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println(line);
+                    String fromText = toParts[0];
+                    String toText = toParts[1];
+                    try {
+                        LocalDate from = LocalDate.parse(fromText);
+                        LocalDate to = LocalDate.parse(toText);
+                        tasks.add(new Event(description, from, to));
+                        storage.save(tasks);
+                        System.out.println(line);
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println("  " + tasks.get(tasks.size() - 1).getTypeIcon() + tasks.get(tasks.size() - 1).getStatusIcon() + " " + tasks.get(tasks.size() - 1).getDescription());
+                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        System.out.println(line);
+                    } catch (DateTimeParseException e) {
+                        System.out.println(line);
+                        System.out.println("OOPS!!! Please enter event dates as yyyy-mm-dd, e.g. 2019-10-15.");
+                        System.out.println(line);
+                    }
                 }
             } else {
                 // Other inputs and commands now return error
