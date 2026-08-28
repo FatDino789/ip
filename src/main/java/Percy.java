@@ -1,5 +1,7 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Percy {
     public static void main(String[] args) {
@@ -124,14 +126,21 @@ public class Percy {
                 } else {
                     String[] parts = details.split(" /by ", 2);
                     String description = parts[0];
-                    String by = parts[1];
-                    tasks.add(new Deadline(description, by));
-                    storage.save(tasks);
-                    System.out.println(line);
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks.get(tasks.size() - 1).getTypeIcon() + tasks.get(tasks.size() - 1).getStatusIcon() + " " + tasks.get(tasks.size() - 1).getDescription());
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println(line);
+                    String byText = parts[1];
+                    try {
+                        LocalDate by = LocalDate.parse(byText);
+                        tasks.add(new Deadline(description, by));
+                        storage.save(tasks);
+                        System.out.println(line);
+                        System.out.println("Got it. I've added this task:");
+                        System.out.println("  " + tasks.get(tasks.size() - 1).getTypeIcon() + tasks.get(tasks.size() - 1).getStatusIcon() + " " + tasks.get(tasks.size() - 1).getDescription());
+                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        System.out.println(line);
+                    } catch (DateTimeParseException e) {
+                        System.out.println(line);
+                        System.out.println("OOPS!!! Please enter the deadline date as yyyy-mm-dd, e.g. 2019-10-15.");
+                        System.out.println(line);
+                    }
                 }
             } else if (input.equals("event") || input.startsWith("event ")) {
                 // Marking task as event

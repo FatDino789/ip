@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.time.LocalDate;
+
 public class Storage {
     private String filePath;
 
@@ -50,7 +52,7 @@ public class Storage {
             if (type.equals("T")) {
                 task = new Todo(description);
             } else if (type.equals("D")) {
-                task = new Deadline(description, parts[3]);
+                task = new Deadline(description, LocalDate.parse(parts[3]));
             } else if (type.equals("E")) {
                 task = new Event(description, parts[3], parts[4]);
             } else {
