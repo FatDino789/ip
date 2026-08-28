@@ -22,8 +22,9 @@ public class Percy {
         System.out.println("What can I do for you?");
         System.out.println(line);
 
-        // Initialize the list of tasks
-        ArrayList<Task> tasks = new ArrayList<>();
+        // Initialize storage and load any previously saved tasks
+        Storage storage = new Storage("./data/percy.txt");
+        ArrayList<Task> tasks = storage.load();
 
         // Continuously prompt until the user inputs bye
         while (true) {
@@ -50,6 +51,7 @@ public class Percy {
                 int taskNum = Integer.parseInt(input.substring(5));
                 int index = taskNum - 1;
                 tasks.get(index).markDone();
+                storage.save(tasks);
                 System.out.println(line);
                 System.out.println("Nice! I've marked this task as done:");
                 System.out.println("  " + tasks.get(index).getTypeIcon() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription());
@@ -59,6 +61,7 @@ public class Percy {
                 int taskNum = Integer.parseInt(input.substring(7));
                 int index = taskNum - 1;
                 tasks.get(index).unmarkDone();
+                storage.save(tasks);
                 System.out.println(line);
                 System.out.println("OK, I've marked this task as not done yet:");
                 System.out.println("  " + tasks.get(index).getTypeIcon() + tasks.get(index).getStatusIcon() + " " + tasks.get(index).getDescription());
@@ -80,6 +83,7 @@ public class Percy {
                             System.out.println(line);
                         } else {
                             Task removed = tasks.remove(index);
+                            storage.save(tasks);
                             System.out.println(line);
                             System.out.println("Noted. I've removed this task:");
                             System.out.println("  " + removed.getTypeIcon() + removed.getStatusIcon() + " " + removed.getDescription());
@@ -102,6 +106,7 @@ public class Percy {
                     System.out.println(line);
                 } else {
                     tasks.add(new Todo(description));
+                    storage.save(tasks);
                     System.out.println(line);
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + tasks.get(tasks.size() - 1).getTypeIcon() + tasks.get(tasks.size() - 1).getStatusIcon() + " " + tasks.get(tasks.size() - 1).getDescription());
@@ -121,6 +126,7 @@ public class Percy {
                     String description = parts[0];
                     String by = parts[1];
                     tasks.add(new Deadline(description, by));
+                    storage.save(tasks);
                     System.out.println(line);
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + tasks.get(tasks.size() - 1).getTypeIcon() + tasks.get(tasks.size() - 1).getStatusIcon() + " " + tasks.get(tasks.size() - 1).getDescription());

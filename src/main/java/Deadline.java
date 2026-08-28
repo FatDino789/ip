@@ -15,4 +15,14 @@ public class Deadline extends Task {
     public String getDescription() {
         return super.getDescription() + " (by: " + by + ")";
     }
+
+    @Override
+    public String getTypeLetter() {
+        return "D";
+    }
+
+    @Override
+    public String toFileFormat() {
+        return super.toFileFormat() + " | " + by;
+    }
 }
