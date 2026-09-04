@@ -69,7 +69,7 @@ public class Storage {
     }
 
     // Saves the full task list to disk, creating the data folder first if needed.
-    public void save(ArrayList<Task> tasks) {
+    public void save(TaskList tasks) {
         File file = new File(filePath);
         File parentDir = file.getParentFile();
 
@@ -78,8 +78,8 @@ public class Storage {
         }
 
         try (FileWriter writer = new FileWriter(file)) {
-            for (Task task : tasks) {
-                writer.write(task.toFileFormat() + System.lineSeparator());
+            for (int i = 0; i < tasks.size(); i++) {
+                writer.write(tasks.get(i).toFileFormat() + System.lineSeparator());
             }
         } catch (IOException e) {
             System.out.println("OOPS!!! Could not save tasks.");
