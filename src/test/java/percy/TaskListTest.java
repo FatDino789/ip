@@ -63,4 +63,38 @@ public class TaskListTest {
         assertEquals(2, tasks.size());
         assertEquals("x", tasks.get(0).getRawDescription());
     }
+
+    @Test
+    public void find_returnsOnlyMatchingTasksInOrder() {
+        TaskList tasks = new TaskList();
+        Todo readBook = new Todo("read book");
+        Todo buyMilk = new Todo("buy milk");
+        Deadline returnBook = new Deadline("return book", java.time.LocalDate.of(2019, 6, 6));
+        tasks.add(readBook);
+        tasks.add(buyMilk);
+        tasks.add(returnBook);
+
+        TaskList matches = tasks.find("book");
+
+        assertEquals(2, matches.size());
+        assertSame(readBook, matches.get(0));
+        assertSame(returnBook, matches.get(1));
+    }
+
+    @Test
+    public void find_isCaseInsensitive() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("Read Book"));
+
+        assertEquals(1, tasks.find("book").size());
+        assertEquals(1, tasks.find("READ").size());
+    }
+
+    @Test
+    public void find_noMatch_returnsEmptyList() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("read book"));
+
+        assertEquals(0, tasks.find("homework").size());
+    }
 }

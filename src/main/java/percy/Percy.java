@@ -59,6 +59,9 @@ public class Percy {
         case LIST:
             ui.showTaskList(tasks);
             return false;
+        case FIND:
+            ui.showMatchingTasks(tasks.find(requireKeyword(command.getArguments())));
+            return false;
         case MARK: {
             Task task = tasks.get(resolveIndex(command.getArguments()));
             task.markDone();
@@ -110,6 +113,18 @@ public class Percy {
             throw new PercyException("OOPS!!! That task number doesn't exist.");
         }
         return index;
+    }
+
+    /**
+     * Returns the search keyword typed after {@code find}.
+     *
+     * @throws PercyException if no keyword was given.
+     */
+    private String requireKeyword(String arguments) throws PercyException {
+        if (arguments.isEmpty()) {
+            throw new PercyException("OOPS!!! Please tell me what keyword to search for.");
+        }
+        return arguments;
     }
 
     public static void main(String[] args) {

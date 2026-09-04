@@ -77,6 +77,18 @@ public class Ui {
         showLine();
     }
 
+    /** Prints the tasks that matched a {@code find} search, numbered from 1. */
+    public void showMatchingTasks(TaskList matches) {
+        showLine();
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < matches.size(); i++) {
+            Task task = matches.get(i);
+            System.out.println((i + 1) + "." + task.getTypeIcon()
+                    + task.getStatusIcon() + " " + task.getDescription());
+        }
+        showLine();
+    }
+
     /** Confirms that a task was added and reports the new total. */
     public void showAdded(Task task, int total) {
         showLine();
