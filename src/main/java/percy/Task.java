@@ -1,3 +1,5 @@
+package percy;
+
 // Task class that contains the properties to be tracked for each task
 public class Task {
     private String description;

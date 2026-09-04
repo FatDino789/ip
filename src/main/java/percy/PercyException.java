@@ -1,3 +1,5 @@
+package percy;
+
 /**
  * Represents an error that Percy itself raises, such as an unknown command
  * or a badly formed argument.

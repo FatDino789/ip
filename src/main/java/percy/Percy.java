@@ -1,3 +1,5 @@
+package percy;
+
 /**
  * Entry point for the Percy task-tracking chatbot.
  *
