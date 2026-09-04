@@ -112,6 +112,11 @@ public class Percy {
         return index;
     }
 
+    /**
+     * Starts Percy, saving tasks to {@code ./data/percy.txt}.
+     *
+     * @param args command-line arguments (unused)
+     */
     public static void main(String[] args) {
         new Percy("./data/percy.txt").run();
     }

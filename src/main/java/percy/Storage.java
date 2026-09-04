@@ -9,15 +9,29 @@ import java.util.ArrayList;
 
 import java.time.LocalDate;
 
+/**
+ * Loads tasks from the save file at startup and writes them back whenever the
+ * list changes, so tasks persist between runs.
+ */
 public class Storage {
     private String filePath;
 
+    /**
+     * Creates a storage handler for the given save-file path.
+     *
+     * @param filePath path to the file tasks are read from and written to
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
-    // Load tasks from the save file. Returns an empty list if the file
-    // or its parent folder doesn't exist yet, or if it's corrupted.
+    /**
+     * Loads all tasks from the save file.
+     *
+     * @return the saved tasks, or an empty list if the file does not exist yet.
+     *     Lines that are corrupted or unrecognised are skipped rather than
+     *     aborting the load.
+     */
     public ArrayList<Task> load() {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -41,8 +55,13 @@ public class Storage {
         return tasks;
     }
 
-    // Parses one line of the save file into a Task. Returns null if the
-    // line is corrupted/unrecognized, so it can be safely skipped.
+    /**
+     * Parses one line of the save file into a {@link Task}.
+     *
+     * @param line a single line in {@code <type> | <0/1> | <description> ...} form
+     * @return the reconstructed task, or {@code null} if the line is corrupted
+     *     or its type is unrecognised, so the caller can safely skip it
+     */
     private Task parseLine(String line) {
         try {
             String[] parts = line.split(" \\| ");
@@ -70,7 +89,12 @@ public class Storage {
         }
     }
 
-    // Saves the full task list to disk, creating the data folder first if needed.
+    /**
+     * Writes the whole task list to the save file, overwriting its previous
+     * contents. The parent folder is created first if it does not exist.
+     *
+     * @param tasks the task list to persist
+     */
     public void save(TaskList tasks) {
         File file = new File(filePath);
         File parentDir = file.getParentFile();
