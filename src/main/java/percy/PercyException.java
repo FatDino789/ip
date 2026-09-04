@@ -9,6 +9,11 @@ package percy;
  * bugs, which are allowed to surface normally.
  */
 public class PercyException extends Exception {
+    /**
+     * Creates the exception with a message suitable for showing to the user.
+     *
+     * @param message the user-facing explanation of what went wrong
+     */
     public PercyException(String message) {
         super(message);
     }

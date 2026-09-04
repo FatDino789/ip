@@ -33,10 +33,20 @@ public class Parser {
             this.arguments = arguments;
         }
 
+        /**
+         * Returns the kind of command this is.
+         *
+         * @return the command type
+         */
         public CommandType getType() {
             return type;
         }
 
+        /**
+         * Returns the text typed after the command word, trimmed. May be empty.
+         *
+         * @return the argument string
+         */
         public String getArguments() {
             return arguments;
         }
