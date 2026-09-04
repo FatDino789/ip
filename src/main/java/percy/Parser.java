@@ -17,7 +17,7 @@ public class Parser {
 
     /** The kinds of command Percy understands. */
     public enum CommandType {
-        BYE, LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, UNKNOWN
+        BYE, LIST, FIND, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, UNKNOWN
     }
 
     /**
@@ -67,6 +67,8 @@ public class Parser {
             return CommandType.BYE;
         case "list":
             return CommandType.LIST;
+        case "find":
+            return CommandType.FIND;
         case "mark":
             return CommandType.MARK;
         case "unmark":
