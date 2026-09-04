@@ -2,7 +2,7 @@ package percy;
 
 // Task class that contains the properties to be tracked for each task
 public class Task {
-    private String description;
+    private final String description;
     private boolean isDone;
 
     public Task(String description) {
@@ -26,7 +26,7 @@ public class Task {
         return description;
     }
 
-    // Method to be overriden by subclass
+    // Overridden by each subclass to supply its own type icon.
     public String getTypeIcon() {
         return "";
     }

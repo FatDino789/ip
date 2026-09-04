@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Event extends Task {
-    private LocalDate from;
-    private LocalDate to;
+    private final LocalDate from;
+    private final LocalDate to;
 
     public Event(String description, LocalDate from, LocalDate to) {
         super(description);
@@ -21,7 +21,9 @@ public class Event extends Task {
     @Override
     public String getDescription() {
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MMM dd yyyy");
-        return super.getDescription() + " (from: " + from.format(outputFormat) + " to: " + to.format(outputFormat) + ")";
+        return super.getDescription()
+                + " (from: " + from.format(outputFormat)
+                + " to: " + to.format(outputFormat) + ")";
     }
 
     @Override

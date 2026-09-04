@@ -4,8 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Deadline extends Task {
-    // Updated new type for by variable
-    private LocalDate by;
+    private final LocalDate by;
 
     public Deadline(String description, LocalDate by) {
         super(description);
@@ -30,7 +29,6 @@ public class Deadline extends Task {
 
     @Override
     public String toFileFormat() {
-        // Required function toString to concatenate strings for print
         return super.toFileFormat() + " | " + by.toString();
     }
 }
