@@ -8,7 +8,7 @@ package percy;
  * own extra fields and override the rendering methods.
  */
 public class Task {
-    private String description;
+    private final String description;
     private boolean isDone;
 
     /**

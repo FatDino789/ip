@@ -7,8 +7,8 @@ import java.time.format.DateTimeFormatter;
  * A task that spans a period between two dates.
  */
 public class Event extends Task {
-    private LocalDate from;
-    private LocalDate to;
+    private final LocalDate from;
+    private final LocalDate to;
 
     /**
      * Creates an event.
@@ -37,7 +37,9 @@ public class Event extends Task {
     @Override
     public String getDescription() {
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MMM dd yyyy");
-        return super.getDescription() + " (from: " + from.format(outputFormat) + " to: " + to.format(outputFormat) + ")";
+        return super.getDescription()
+                + " (from: " + from.format(outputFormat)
+                + " to: " + to.format(outputFormat) + ")";
     }
 
     @Override

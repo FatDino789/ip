@@ -5,16 +5,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 /**
  * Loads tasks from the save file at startup and writes them back whenever the
  * list changes, so tasks persist between runs.
  */
 public class Storage {
-    private String filePath;
+    private final String filePath;
 
     /**
      * Creates a storage handler for the given save-file path.

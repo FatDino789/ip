@@ -7,8 +7,7 @@ import java.time.format.DateTimeFormatter;
  * A task that must be done by a specific date.
  */
 public class Deadline extends Task {
-    // Updated new type for by variable
-    private LocalDate by;
+    private final LocalDate by;
 
     /**
      * Creates a deadline.
@@ -51,7 +50,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileFormat() {
-        // Required function toString to concatenate strings for print
         return super.toFileFormat() + " | " + by.toString();
     }
 }
