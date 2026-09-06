@@ -2,11 +2,17 @@ plugins {
     id 'java'
     id 'application'
     id 'com.gradleup.shadow' version '9.5.1'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
+}
+
+javafx {
+    version = '23.0.2'
+    modules = ['javafx.controls', 'javafx.fxml']
 }
 
 repositories {
@@ -37,7 +43,11 @@ test {
 }
 
 application {
-    mainClass = 'percy.Percy'
+    // Launch through Launcher (a plain class), not the JavaFX Application
+    // subclass, so the app also starts correctly from the shaded JAR.
+    mainClass = 'percy.Launcher'
+    // Silence the "restricted method" warnings JavaFX triggers on Java 24+.
+    applicationDefaultJvmArgs = ['--enable-native-access=javafx.graphics']
 }
 
 jar {

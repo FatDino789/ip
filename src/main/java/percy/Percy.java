@@ -1,21 +1,26 @@
 package percy;
 
 /**
- * Entry point for the Percy task-tracking chatbot.
+ * The core of the Percy task-tracking chatbot.
  *
- * <p>Percy's work is split across four helper classes; this class just wires
- * them together and runs the main command loop:
+ * <p>Percy's work is split across four helper classes; this class wires them
+ * together:
  * <ul>
- *   <li>{@link Ui} &ndash; reads input and prints responses</li>
+ *   <li>{@link Ui} &ndash; formats responses (and reads input in CLI mode)</li>
  *   <li>{@link Storage} &ndash; loads and saves tasks to disk</li>
  *   <li>{@link TaskList} &ndash; holds the tasks in memory</li>
  *   <li>{@link Parser} &ndash; turns raw input into structured commands</li>
  * </ul>
+ *
+ * <p>It can be driven two ways: {@link #run()} for the command-line loop, or
+ * {@link #getResponse(String)} one command at a time from the JavaFX GUI
+ * ({@link Main} / {@link MainWindow}).
  */
 public class Percy {
     private final Ui ui;
     private final Storage storage;
     private TaskList tasks;
+    private boolean isExit = false;
 
     /**
      * Creates a Percy instance that persists tasks to {@code filePath}.
@@ -28,20 +33,56 @@ public class Percy {
         tasks = new TaskList(storage.load());
     }
 
-    /** Runs the read&ndash;evaluate&ndash;respond loop until the user types {@code bye}. */
+    /**
+     * Runs the command-line read&ndash;evaluate&ndash;respond loop, printing each
+     * response, until the user types {@code bye}.
+     */
     public void run() {
         ui.showWelcome();
+        System.out.print(ui.flush());
 
-        boolean isExit = false;
         while (!isExit) {
             String input = ui.readCommand();
-            Parser.Command command = Parser.parse(input);
             try {
-                isExit = execute(command);
+                isExit = execute(Parser.parse(input));
             } catch (PercyException e) {
                 ui.showError(e.getMessage());
             }
+            System.out.print(ui.flush());
         }
+    }
+
+    /**
+     * Handles one command entered in the GUI.
+     *
+     * @param input the raw command line typed by the user
+     * @return Percy's response text
+     */
+    public String getResponse(String input) {
+        try {
+            isExit = execute(Parser.parse(input));
+        } catch (PercyException e) {
+            ui.showError(e.getMessage());
+        }
+        return ui.flush().strip();
+    }
+
+    /**
+     * Returns the greeting shown when the GUI first opens.
+     *
+     * @return the greeting text
+     */
+    public String getWelcome() {
+        return "Hello! I'm Percy.\nWhat can I do for you?";
+    }
+
+    /**
+     * Returns whether the user has ended the session with {@code bye}.
+     *
+     * @return true once Percy should exit
+     */
+    public boolean isExit() {
+        return isExit;
     }
 
     /**
