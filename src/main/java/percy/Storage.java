@@ -28,6 +28,7 @@ public class Storage {
      * @param filePath path to the file tasks are read from and written to
      */
     public Storage(String filePath) {
+        assert filePath != null : "storage file path should not be null";
         this.filePath = filePath;
     }
 
@@ -99,6 +100,7 @@ public class Storage {
      * @param tasks the task list to persist
      */
     public void save(TaskList tasks) {
+        assert tasks != null : "task list to save should not be null";
         File file = new File(filePath);
         File parentDir = file.getParentFile();
 

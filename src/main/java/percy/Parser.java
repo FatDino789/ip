@@ -61,6 +61,7 @@ public class Parser {
 
     /** Splits raw input into a command word and its argument string. */
     public static Command parse(String input) {
+        assert input != null : "input line should not be null";
         String trimmed = input.trim();
         int firstSpace = trimmed.indexOf(' ');
 
@@ -79,6 +80,7 @@ public class Parser {
 
     /** Maps a command word to its {@link CommandType}, or UNKNOWN if unrecognised. */
     private static CommandType toCommandType(String commandWord) {
+        assert commandWord != null : "command word should not be null";
         return switch (commandWord) {
         case "bye" -> CommandType.BYE;
         case "list" -> CommandType.LIST;
@@ -100,6 +102,7 @@ public class Parser {
      * @throws PercyException if the number is missing or not an integer.
      */
     public static int parseIndex(String arguments) throws PercyException {
+        assert arguments != null : "arguments should not be null";
         if (arguments.isEmpty()) {
             throw new PercyException("OOPS!!! Please specify which task number.");
         }
@@ -136,6 +139,7 @@ public class Parser {
         if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
             throw new PercyException("OOPS!!! A deadline needs a description and a '/by' date.");
         }
+        assert parts.length == 2 : "a validated deadline splits into exactly 2 parts";
         return new Deadline(parts[0].trim(), parseDate(parts[1]));
     }
 
@@ -158,6 +162,8 @@ public class Parser {
                 || startAndEnd[1].trim().isEmpty()) {
             throw eventFormatError();
         }
+        assert descriptionAndDates.length == 2 && startAndEnd.length == 2
+                : "a validated event splits into a description and two dates";
         return new Event(descriptionAndDates[0].trim(),
                 parseDate(startAndEnd[0]), parseDate(startAndEnd[1]));
     }

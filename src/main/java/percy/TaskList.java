@@ -23,6 +23,7 @@ public class TaskList {
      * loaded from disk by {@link Storage}.
      */
     public TaskList(ArrayList<Task> tasks) {
+        assert tasks != null : "seed task list should not be null";
         this.tasks = tasks;
     }
 
@@ -33,16 +34,19 @@ public class TaskList {
 
     /** Returns the task at the given zero-based index. */
     public Task get(int index) {
+        assert isValidIndex(index) : "get called with out-of-range index: " + index;
         return tasks.get(index);
     }
 
     /** Appends a task to the end of the list. */
     public void add(Task task) {
+        assert task != null : "cannot add a null task";
         tasks.add(task);
     }
 
     /** Removes and returns the task at the given zero-based index. */
     public Task remove(int index) {
+        assert isValidIndex(index) : "remove called with out-of-range index: " + index;
         return tasks.remove(index);
     }
 
@@ -63,6 +67,7 @@ public class TaskList {
      * @return a task list of the matches (empty if none match)
      */
     public TaskList find(String keyword) {
+        assert keyword != null : "search keyword should not be null";
         String lowerKeyword = keyword.toLowerCase();
         ArrayList<Task> matches = new ArrayList<>();
         for (Task task : tasks) {
