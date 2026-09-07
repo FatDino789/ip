@@ -117,6 +117,14 @@ public class Ui {
         showLine();
     }
 
+    /** Confirms that a task's details were updated. */
+    public void showUpdated(Task task) {
+        showLine();
+        print("Nice! I've updated this task:");
+        showTaskDetail(task);
+        showLine();
+    }
+
     /** Adds a framed, numbered list of tasks under the given header. */
     private void showNumberedTasks(String header, TaskList tasks) {
         showLine();
