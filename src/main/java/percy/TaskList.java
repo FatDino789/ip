@@ -1,6 +1,8 @@
 package percy;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Holds the list of tasks in memory and provides the operations Percy needs
@@ -46,6 +48,11 @@ public class TaskList {
         return tasks.remove(index);
     }
 
+    /** Returns a sequential {@link Stream} over the tasks, in list order. */
+    public Stream<Task> stream() {
+        return tasks.stream();
+    }
+
     /**
      * Returns true if {@code index} is a valid zero-based position in the list.
      * Used to validate task numbers typed by the user.
@@ -63,13 +70,10 @@ public class TaskList {
      * @return a task list of the matches (empty if none match)
      */
     public TaskList find(String keyword) {
-        String needle = keyword.toLowerCase();
-        ArrayList<Task> matches = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task.getRawDescription().toLowerCase().contains(needle)) {
-                matches.add(task);
-            }
-        }
+        String lowerKeyword = keyword.toLowerCase();
+        ArrayList<Task> matches = stream()
+                .filter(task -> task.getRawDescription().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toCollection(ArrayList::new));
         return new TaskList(matches);
     }
 }
