@@ -7,13 +7,20 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * Loads tasks from the save file at startup and writes them back whenever the
  * list changes, so tasks persist between runs.
+ *
+ * <p>Each line is stored as {@code <type> | <done flag> | <description>} with
+ * type-specific fields (dates) appended after the description.
  */
 public class Storage {
+    /** Value in the done-flag field that marks a task as completed. */
+    private static final String DONE_FLAG = "1";
+
     private final String filePath;
 
     /**
@@ -59,25 +66,22 @@ public class Storage {
      */
     private Task parseLine(String line) {
         try {
-            String[] parts = line.split(" \\| ");
-            String type = parts[0];
-            boolean isDone = parts[1].equals("1");
-            String description = parts[2];
-            Task task;
+            String[] fields = line.split(Pattern.quote(Task.FILE_SEPARATOR));
+            String type = fields[0];
+            boolean isDone = fields[1].equals(DONE_FLAG);
+            String description = fields[2];
 
-            if (type.equals("T")) {
-                task = new Todo(description);
-            } else if (type.equals("D")) {
-                task = new Deadline(description, LocalDate.parse(parts[3]));
-            } else if (type.equals("E")) {
-                task = new Event(description, LocalDate.parse(parts[3]), LocalDate.parse(parts[4]));
-            } else {
+            Task task = switch (type) {
+            case "T" -> new Todo(description);
+            case "D" -> new Deadline(description, LocalDate.parse(fields[3]));
+            case "E" -> new Event(description, LocalDate.parse(fields[3]), LocalDate.parse(fields[4]));
+            default -> null;
+            };
+            if (task == null) {
                 return null;
             }
 
-            if (isDone) {
-                task.markDone();
-            }
+            task.setDone(isDone);
             return task;
         } catch (Exception e) {
             return null;

@@ -105,20 +105,12 @@ public class Percy {
         case FIND:
             ui.showMatchingTasks(tasks.find(requireKeyword(command.getArguments())));
             return false;
-        case MARK: {
-            Task task = tasks.get(resolveIndex(command.getArguments()));
-            task.markDone();
-            storage.save(tasks);
-            ui.showMarked(task);
+        case MARK:
+            ui.showMarked(setDoneStatus(command.getArguments(), true));
             return false;
-        }
-        case UNMARK: {
-            Task task = tasks.get(resolveIndex(command.getArguments()));
-            task.unmarkDone();
-            storage.save(tasks);
-            ui.showUnmarked(task);
+        case UNMARK:
+            ui.showUnmarked(setDoneStatus(command.getArguments(), false));
             return false;
-        }
         case DELETE: {
             Task removed = tasks.remove(resolveIndex(command.getArguments()));
             storage.save(tasks);
@@ -143,6 +135,19 @@ public class Percy {
         storage.save(tasks);
         ui.showAdded(task, tasks.size());
         return false;
+    }
+
+    /**
+     * Marks the task referred to by {@code arguments} as done or not done, saves
+     * the change, and returns the affected task.
+     *
+     * @throws PercyException if the task number is missing or out of range
+     */
+    private Task setDoneStatus(String arguments, boolean done) throws PercyException {
+        Task task = tasks.get(resolveIndex(arguments));
+        task.setDone(done);
+        storage.save(tasks);
+        return task;
     }
 
     /**
