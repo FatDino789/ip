@@ -46,8 +46,10 @@ application {
     // Launch through Launcher (a plain class), not the JavaFX Application
     // subclass, so the app also starts correctly from the shaded JAR.
     mainClass = 'percy.Launcher'
-    // Silence the "restricted method" warnings JavaFX triggers on Java 24+.
-    applicationDefaultJvmArgs = ['--enable-native-access=javafx.graphics']
+    // -ea: run with assertions enabled so the assumptions documented in the
+    // code are actually checked during development.
+    // --enable-native-access: silence the warnings JavaFX triggers on Java 24+.
+    applicationDefaultJvmArgs = ['-ea', '--enable-native-access=javafx.graphics']
 }
 
 jar {

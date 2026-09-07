@@ -28,6 +28,7 @@ public class Percy {
      * starts with an empty task list rather than crashing.
      */
     public Percy(String filePath) {
+        assert filePath != null : "save-file path should not be null";
         ui = new Ui();
         storage = new Storage(filePath);
         tasks = new TaskList(storage.load());
@@ -93,6 +94,7 @@ public class Percy {
      * @throws PercyException if the command's arguments are invalid.
      */
     private boolean execute(Parser.Command command) throws PercyException {
+        assert command != null : "parsed command should not be null";
         switch (command.getType()) {
         case BYE:
             ui.showGoodbye();
@@ -136,6 +138,7 @@ public class Percy {
 
     /** Adds a task, persists the list, and reports it. Always keeps Percy running. */
     private boolean addTask(Task task) {
+        assert task != null : "task to add should not be null";
         tasks.add(task);
         storage.save(tasks);
         ui.showAdded(task, tasks.size());
@@ -153,6 +156,7 @@ public class Percy {
         if (!tasks.isValidIndex(index)) {
             throw new PercyException("OOPS!!! That task number doesn't exist.");
         }
+        assert tasks.isValidIndex(index) : "resolveIndex must return an in-range index";
         return index;
     }
 
