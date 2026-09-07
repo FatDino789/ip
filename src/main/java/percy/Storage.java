@@ -1,13 +1,14 @@
 package percy;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Loads tasks from the save file at startup and writes them back whenever the
@@ -40,26 +41,20 @@ public class Storage {
      *     aborting the load.
      */
     public ArrayList<Task> load() {
-        ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
-
         if (!file.exists()) {
-            return tasks;
+            return new ArrayList<>();
         }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Task task = parseLine(line);
-                if (task != null) {
-                    tasks.add(task);
-                }
-            }
+        try {
+            return Files.readAllLines(file.toPath()).stream()
+                    .map(this::parseLine)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toCollection(ArrayList::new));
         } catch (IOException e) {
             System.out.println("OOPS!!! Could not load saved tasks.");
+            return new ArrayList<>();
         }
-
-        return tasks;
     }
 
     /**
@@ -108,10 +103,13 @@ public class Storage {
             parentDir.mkdirs();
         }
 
+        String content = tasks.stream()
+                .map(Task::toFileFormat)
+                .map(line -> line + System.lineSeparator())
+                .collect(Collectors.joining());
+
         try (FileWriter writer = new FileWriter(file)) {
-            for (int i = 0; i < tasks.size(); i++) {
-                writer.write(tasks.get(i).toFileFormat() + System.lineSeparator());
-            }
+            writer.write(content);
         } catch (IOException e) {
             System.out.println("OOPS!!! Could not save tasks.");
         }

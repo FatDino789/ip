@@ -97,4 +97,17 @@ public class TaskListTest {
 
         assertEquals(0, tasks.find("homework").size());
     }
+
+    @Test
+    public void stream_yieldsTasksInOrder() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("a"));
+        tasks.add(new Todo("b"));
+
+        java.util.List<String> descriptions = tasks.stream()
+                .map(Task::getRawDescription)
+                .toList();
+
+        assertEquals(java.util.List.of("a", "b"), descriptions);
+    }
 }
