@@ -15,6 +15,9 @@ import javafx.util.Duration;
  * the user's commands, forwarding each one to {@link Percy}.
  */
 public class MainWindow {
+    /** How long the farewell message stays on screen before the window closes. */
+    private static final Duration EXIT_DELAY = Duration.seconds(1.2);
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -66,7 +69,7 @@ public class MainWindow {
         );
         userInput.clear();
         if (percy.isExit()) {
-            PauseTransition delay = new PauseTransition(Duration.seconds(1.2));
+            PauseTransition delay = new PauseTransition(EXIT_DELAY);
             delay.setOnFinished(event -> Platform.exit());
             delay.play();
         }

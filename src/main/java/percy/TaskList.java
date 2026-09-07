@@ -68,10 +68,10 @@ public class TaskList {
      */
     public TaskList find(String keyword) {
         assert keyword != null : "search keyword should not be null";
-        String needle = keyword.toLowerCase();
+        String lowerKeyword = keyword.toLowerCase();
         ArrayList<Task> matches = new ArrayList<>();
         for (Task task : tasks) {
-            if (task.getRawDescription().toLowerCase().contains(needle)) {
+            if (task.getRawDescription().toLowerCase().contains(lowerKeyword)) {
                 matches.add(task);
             }
         }

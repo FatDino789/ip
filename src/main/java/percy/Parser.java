@@ -15,6 +15,13 @@ import java.time.format.DateTimeParseException;
  */
 public class Parser {
 
+    /** Keyword that separates a deadline's description from its due date. */
+    private static final String BY = " /by ";
+    /** Keyword that separates an event's description from its start date. */
+    private static final String FROM = " /from ";
+    /** Keyword that separates an event's start date from its end date. */
+    private static final String TO = " /to ";
+
     /** The kinds of command Percy understands. */
     public enum CommandType {
         BYE, LIST, FIND, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, UNKNOWN
@@ -68,34 +75,24 @@ public class Parser {
             arguments = trimmed.substring(firstSpace + 1).trim();
         }
 
-        return new Command(toType(commandWord), arguments);
+        return new Command(toCommandType(commandWord), arguments);
     }
 
     /** Maps a command word to its {@link CommandType}, or UNKNOWN if unrecognised. */
-    private static CommandType toType(String commandWord) {
+    private static CommandType toCommandType(String commandWord) {
         assert commandWord != null : "command word should not be null";
-        switch (commandWord) {
-        case "bye":
-            return CommandType.BYE;
-        case "list":
-            return CommandType.LIST;
-        case "find":
-            return CommandType.FIND;
-        case "mark":
-            return CommandType.MARK;
-        case "unmark":
-            return CommandType.UNMARK;
-        case "delete":
-            return CommandType.DELETE;
-        case "todo":
-            return CommandType.TODO;
-        case "deadline":
-            return CommandType.DEADLINE;
-        case "event":
-            return CommandType.EVENT;
-        default:
-            return CommandType.UNKNOWN;
-        }
+        return switch (commandWord) {
+        case "bye" -> CommandType.BYE;
+        case "list" -> CommandType.LIST;
+        case "find" -> CommandType.FIND;
+        case "mark" -> CommandType.MARK;
+        case "unmark" -> CommandType.UNMARK;
+        case "delete" -> CommandType.DELETE;
+        case "todo" -> CommandType.TODO;
+        case "deadline" -> CommandType.DEADLINE;
+        case "event" -> CommandType.EVENT;
+        default -> CommandType.UNKNOWN;
+        };
     }
 
     /**
@@ -138,19 +135,12 @@ public class Parser {
         if (arguments.isEmpty()) {
             throw new PercyException("OOPS!!! The description of a deadline cannot be empty.");
         }
-        String[] parts = arguments.split(" /by ", 2);
+        String[] parts = arguments.split(BY, 2);
         if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
-            throw new PercyException(
-                    "OOPS!!! A deadline needs a description and a '/by' date.");
+            throw new PercyException("OOPS!!! A deadline needs a description and a '/by' date.");
         }
         assert parts.length == 2 : "a validated deadline splits into exactly 2 parts";
-        try {
-            LocalDate by = LocalDate.parse(parts[1].trim());
-            return new Deadline(parts[0].trim(), by);
-        } catch (DateTimeParseException e) {
-            throw new PercyException(
-                    "OOPS!!! Please enter the deadline date as yyyy-mm-dd, e.g. 2019-10-15.");
-        }
+        return new Deadline(parts[0].trim(), parseDate(parts[1]));
     }
 
     /**
@@ -163,25 +153,37 @@ public class Parser {
         if (arguments.isEmpty()) {
             throw new PercyException("OOPS!!! The description of an event cannot be empty.");
         }
-        String[] fromParts = arguments.split(" /from ", 2);
-        if (fromParts.length < 2 || fromParts[0].trim().isEmpty()) {
-            throw new PercyException(
-                    "OOPS!!! An event needs a description and '/from' and '/to' dates.");
+        String[] descriptionAndDates = arguments.split(FROM, 2);
+        if (descriptionAndDates.length < 2 || descriptionAndDates[0].trim().isEmpty()) {
+            throw eventFormatError();
         }
-        String[] toParts = fromParts[1].split(" /to ", 2);
-        if (toParts.length < 2 || toParts[0].trim().isEmpty() || toParts[1].trim().isEmpty()) {
-            throw new PercyException(
-                    "OOPS!!! An event needs a description and '/from' and '/to' dates.");
+        String[] startAndEnd = descriptionAndDates[1].split(TO, 2);
+        if (startAndEnd.length < 2 || startAndEnd[0].trim().isEmpty()
+                || startAndEnd[1].trim().isEmpty()) {
+            throw eventFormatError();
         }
-        assert fromParts.length == 2 && toParts.length == 2
+        assert descriptionAndDates.length == 2 && startAndEnd.length == 2
                 : "a validated event splits into a description and two dates";
+        return new Event(descriptionAndDates[0].trim(),
+                parseDate(startAndEnd[0]), parseDate(startAndEnd[1]));
+    }
+
+    /**
+     * Parses an ISO {@code yyyy-mm-dd} date, ignoring surrounding spaces.
+     *
+     * @throws PercyException if the text is not a valid date in that format
+     */
+    private static LocalDate parseDate(String text) throws PercyException {
         try {
-            LocalDate from = LocalDate.parse(toParts[0].trim());
-            LocalDate to = LocalDate.parse(toParts[1].trim());
-            return new Event(fromParts[0].trim(), from, to);
+            return LocalDate.parse(text.trim());
         } catch (DateTimeParseException e) {
             throw new PercyException(
-                    "OOPS!!! Please enter event dates as yyyy-mm-dd, e.g. 2019-10-15.");
+                    "OOPS!!! Please enter dates in yyyy-mm-dd format, e.g. 2019-10-15.");
         }
+    }
+
+    private static PercyException eventFormatError() {
+        return new PercyException(
+                "OOPS!!! An event needs a description and '/from' and '/to' dates.");
     }
 }

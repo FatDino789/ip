@@ -8,6 +8,9 @@ package percy;
  * own extra fields and override the rendering methods.
  */
 public class Task {
+    /** Separator between fields of a task's save-file line. */
+    public static final String FILE_SEPARATOR = " | ";
+
     private final String description;
     private boolean isDone;
 
@@ -22,14 +25,13 @@ public class Task {
         this.isDone = false;
     }
 
-    /** Marks this task as done. */
-    public void markDone() {
-        isDone = true;
-    }
-
-    /** Marks this task as not done. */
-    public void unmarkDone() {
-        isDone = false;
+    /**
+     * Sets whether this task is done.
+     *
+     * @param done true to mark the task done, false to mark it not done
+     */
+    public void setDone(boolean done) {
+        this.isDone = done;
     }
 
     /**
@@ -98,6 +100,7 @@ public class Task {
      * @return the save-file representation of this task
      */
     public String toFileFormat() {
-        return getTypeLetter() + " | " + (isDone() ? "1" : "0") + " | " + getRawDescription();
+        return getTypeLetter() + FILE_SEPARATOR + (isDone() ? "1" : "0")
+                + FILE_SEPARATOR + getRawDescription();
     }
 }

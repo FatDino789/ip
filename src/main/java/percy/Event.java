@@ -57,6 +57,6 @@ public class Event extends Task {
      */
     @Override
     public String toFileFormat() {
-        return super.toFileFormat() + " | " + from + " | " + to;
+        return super.toFileFormat() + FILE_SEPARATOR + from + FILE_SEPARATOR + to;
     }
 }

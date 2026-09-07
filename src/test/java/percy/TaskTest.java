@@ -23,10 +23,10 @@ public class TaskTest {
         Task t = new Todo("read book");
         assertEquals("[ ]", t.getStatusIcon());
 
-        t.markDone();
+        t.setDone(true);
         assertEquals("[X]", t.getStatusIcon());
 
-        t.unmarkDone();
+        t.setDone(false);
         assertEquals("[ ]", t.getStatusIcon());
     }
 
@@ -37,7 +37,7 @@ public class TaskTest {
         Todo t = new Todo("read book");
         assertEquals("T | 0 | read book", t.toFileFormat());
 
-        t.markDone();
+        t.setDone(true);
         assertEquals("T | 1 | read book", t.toFileFormat());
     }
 
@@ -46,7 +46,7 @@ public class TaskTest {
         Deadline d = new Deadline("return book", LocalDate.of(2019, 10, 15));
         assertEquals("D | 0 | return book | 2019-10-15", d.toFileFormat());
 
-        d.markDone();
+        d.setDone(true);
         assertEquals("D | 1 | return book | 2019-10-15", d.toFileFormat());
     }
 
