@@ -50,6 +50,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileFormat() {
-        return super.toFileFormat() + " | " + by.toString();
+        return super.toFileFormat() + FILE_SEPARATOR + by;
     }
 }

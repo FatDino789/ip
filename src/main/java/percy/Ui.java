@@ -83,51 +83,29 @@ public class Ui {
 
     /** Adds every task in the list, numbered from 1. */
     public void showTaskList(TaskList tasks) {
-        showLine();
-        print("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            print((i + 1) + "." + task.getTypeIcon()
-                    + task.getStatusIcon() + " " + task.getDescription());
-        }
-        showLine();
+        showNumberedTasks("Here are the tasks in your list:", tasks);
     }
 
     /** Adds the tasks that matched a {@code find} search, numbered from 1. */
     public void showMatchingTasks(TaskList matches) {
-        showLine();
-        print("Here are the matching tasks in your list:");
-        for (int i = 0; i < matches.size(); i++) {
-            Task task = matches.get(i);
-            print((i + 1) + "." + task.getTypeIcon()
-                    + task.getStatusIcon() + " " + task.getDescription());
-        }
-        showLine();
+        showNumberedTasks("Here are the matching tasks in your list:", matches);
     }
 
     /** Confirms that a task was added and reports the new total. */
     public void showAdded(Task task, int total) {
-        showLine();
-        print("Got it. I've added this task:");
-        print("  " + formatTask(task));
-        print("Now you have " + total + " tasks in the list.");
-        showLine();
+        showTaskChange("Got it. I've added this task:", task, total);
     }
 
     /** Confirms that a task was removed and reports the new total. */
     public void showRemoved(Task task, int total) {
-        showLine();
-        print("Noted. I've removed this task:");
-        print("  " + formatTask(task));
-        print("Now you have " + total + " tasks in the list.");
-        showLine();
+        showTaskChange("Noted. I've removed this task:", task, total);
     }
 
     /** Confirms that a task was marked as done. */
     public void showMarked(Task task) {
         showLine();
         print("Nice! I've marked this task as done:");
-        print("  " + formatTask(task));
+        showTaskDetail(task);
         showLine();
     }
 
@@ -135,11 +113,35 @@ public class Ui {
     public void showUnmarked(Task task) {
         showLine();
         print("OK, I've marked this task as not done yet:");
-        print("  " + formatTask(task));
+        showTaskDetail(task);
         showLine();
     }
 
-    /** Shared one-line rendering of a task: type icon, status icon, description. */
+    /** Adds a framed, numbered list of tasks under the given header. */
+    private void showNumberedTasks(String header, TaskList tasks) {
+        showLine();
+        print(header);
+        for (int i = 0; i < tasks.size(); i++) {
+            print((i + 1) + "." + formatTask(tasks.get(i)));
+        }
+        showLine();
+    }
+
+    /** Adds a framed "header / task / new total" confirmation block. */
+    private void showTaskChange(String header, Task task, int total) {
+        showLine();
+        print(header);
+        showTaskDetail(task);
+        print("Now you have " + total + " tasks in the list.");
+        showLine();
+    }
+
+    /** Adds one indented task line. */
+    private void showTaskDetail(Task task) {
+        print("  " + formatTask(task));
+    }
+
+    /** One-line rendering of a task: type icon, status icon, description. */
     private String formatTask(Task task) {
         return task.getTypeIcon() + task.getStatusIcon() + " " + task.getDescription();
     }
