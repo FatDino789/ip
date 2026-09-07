@@ -11,7 +11,7 @@ public class Task {
     /** Separator between fields of a task's save-file line. */
     public static final String FILE_SEPARATOR = " | ";
 
-    private final String description;
+    private String description;
     private boolean isDone;
 
     /**
@@ -32,6 +32,16 @@ public class Task {
      */
     public void setDone(boolean done) {
         this.isDone = done;
+    }
+
+    /**
+     * Replaces this task's description.
+     *
+     * @param description the new description text
+     */
+    public void setDescription(String description) {
+        assert description != null : "task description should not be null";
+        this.description = description;
     }
 
     /**

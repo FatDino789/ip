@@ -24,7 +24,7 @@ public class Parser {
 
     /** The kinds of command Percy understands. */
     public enum CommandType {
-        BYE, LIST, FIND, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, UNKNOWN
+        BYE, LIST, FIND, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, UPDATE, UNKNOWN
     }
 
     /**
@@ -56,6 +56,51 @@ public class Parser {
          */
         public String getArguments() {
             return arguments;
+        }
+    }
+
+    /**
+     * The changes requested by an {@code update} command. A {@code null} field
+     * means "leave this as it is"; only the non-null fields are applied.
+     */
+    public static class UpdateSpec {
+        private final int index;
+        private final String description;
+        private final LocalDate by;
+        private final LocalDate from;
+        private final LocalDate to;
+
+        private UpdateSpec(int index, String description, LocalDate by, LocalDate from, LocalDate to) {
+            this.index = index;
+            this.description = description;
+            this.by = by;
+            this.from = from;
+            this.to = to;
+        }
+
+        /** Returns the 0-based index of the task to update. */
+        public int getIndex() {
+            return index;
+        }
+
+        /** Returns the new description, or {@code null} to keep the current one. */
+        public String getDescription() {
+            return description;
+        }
+
+        /** Returns the new due date, or {@code null} to keep the current one. */
+        public LocalDate getBy() {
+            return by;
+        }
+
+        /** Returns the new start date, or {@code null} to keep the current one. */
+        public LocalDate getFrom() {
+            return from;
+        }
+
+        /** Returns the new end date, or {@code null} to keep the current one. */
+        public LocalDate getTo() {
+            return to;
         }
     }
 
@@ -91,6 +136,7 @@ public class Parser {
         case "todo" -> CommandType.TODO;
         case "deadline" -> CommandType.DEADLINE;
         case "event" -> CommandType.EVENT;
+        case "update" -> CommandType.UPDATE;
         default -> CommandType.UNKNOWN;
         };
     }
@@ -169,6 +215,47 @@ public class Parser {
     }
 
     /**
+     * Parses an {@code update} command's arguments, of the form
+     * {@code <number> [new description] [/by <date>] [/from <date>] [/to <date>]}.
+     * At least one thing to change must be given.
+     *
+     * @throws PercyException if the number or a date is invalid, or nothing
+     *     was asked to be changed
+     */
+    public static UpdateSpec parseUpdate(String arguments) throws PercyException {
+        if (arguments.isBlank()) {
+            throw updateUsageError();
+        }
+        String[] numberAndRest = arguments.trim().split(" ", 2);
+        int index = parseIndex(numberAndRest[0]);
+        String rest = numberAndRest.length > 1 ? numberAndRest[1].trim() : "";
+
+        String[] segments = (" " + rest).split(" /");
+        String description = segments[0].trim().isEmpty() ? null : segments[0].trim();
+        LocalDate by = null;
+        LocalDate from = null;
+        LocalDate to = null;
+        for (int i = 1; i < segments.length; i++) {
+            String segment = segments[i].trim();
+            if (segment.startsWith("by ")) {
+                by = parseDate(segment.substring("by ".length()));
+            } else if (segment.startsWith("from ")) {
+                from = parseDate(segment.substring("from ".length()));
+            } else if (segment.startsWith("to ")) {
+                to = parseDate(segment.substring("to ".length()));
+            } else {
+                throw updateUsageError();
+            }
+        }
+
+        if (description == null && by == null && from == null && to == null) {
+            throw new PercyException(
+                    "OOPS!!! Tell me what to change, e.g. 'update 2 /by 2019-12-01'.");
+        }
+        return new UpdateSpec(index, description, by, from, to);
+    }
+
+    /**
      * Parses an ISO {@code yyyy-mm-dd} date, ignoring surrounding spaces.
      *
      * @throws PercyException if the text is not a valid date in that format
@@ -185,5 +272,10 @@ public class Parser {
     private static PercyException eventFormatError() {
         return new PercyException(
                 "OOPS!!! An event needs a description and '/from' and '/to' dates.");
+    }
+
+    private static PercyException updateUsageError() {
+        return new PercyException("OOPS!!! Usage: update <number> [new description] "
+                + "[/by <date>] [/from <date>] [/to <date>]");
     }
 }

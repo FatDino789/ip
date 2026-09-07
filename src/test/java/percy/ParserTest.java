@@ -1,8 +1,11 @@
 package percy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
@@ -129,5 +132,42 @@ public class ParserTest {
     public void parseTodo_errorMessage_isInformative() {
         PercyException e = assertThrows(PercyException.class, () -> Parser.parseTodo(""));
         assertTrue(e.getMessage().toLowerCase().contains("todo"));
+    }
+
+    // ---- parseUpdate(String) -----------------------------------------------
+
+    @Test
+    public void parseUpdate_dateFieldOnly_leavesOthersNull() throws PercyException {
+        Parser.UpdateSpec spec = Parser.parseUpdate("2 /by 2019-12-01");
+        assertEquals(1, spec.getIndex());
+        assertNull(spec.getDescription());
+        assertEquals(LocalDate.of(2019, 12, 1), spec.getBy());
+        assertNull(spec.getFrom());
+        assertNull(spec.getTo());
+    }
+
+    @Test
+    public void parseUpdate_descriptionAndDates_allCaptured() throws PercyException {
+        Parser.UpdateSpec spec = Parser.parseUpdate("3 team sync /from 2020-01-01 /to 2020-01-02");
+        assertEquals(2, spec.getIndex());
+        assertEquals("team sync", spec.getDescription());
+        assertEquals(LocalDate.of(2020, 1, 1), spec.getFrom());
+        assertEquals(LocalDate.of(2020, 1, 2), spec.getTo());
+        assertNull(spec.getBy());
+    }
+
+    @Test
+    public void parseUpdate_descriptionOnly() throws PercyException {
+        Parser.UpdateSpec spec = Parser.parseUpdate("1 buy more milk");
+        assertEquals("buy more milk", spec.getDescription());
+        assertNull(spec.getBy());
+    }
+
+    @Test
+    public void parseUpdate_missingArgsOrNoChange_throwsPercyException() {
+        assertThrows(PercyException.class, () -> Parser.parseUpdate(""));
+        assertThrows(PercyException.class, () -> Parser.parseUpdate("2"));
+        assertThrows(PercyException.class, () -> Parser.parseUpdate("abc /by 2019-12-01"));
+        assertThrows(PercyException.class, () -> Parser.parseUpdate("2 /by not-a-date"));
     }
 }
