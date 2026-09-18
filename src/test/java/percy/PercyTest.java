@@ -116,6 +116,17 @@ public class PercyTest {
     }
 
     @Test
+    public void wasLastResponseError_tracksOnlyTheMostRecentCall() {
+        Percy percy = newPercy();
+
+        percy.getResponse("blah");
+        assertTrue(percy.wasLastResponseError());
+
+        percy.getResponse("todo read book");
+        assertFalse(percy.wasLastResponseError());
+    }
+
+    @Test
     public void getResponse_invalidTaskNumber_showsAnErrorInstead() {
         Percy percy = newPercy();
         percy.getResponse("todo read book");
