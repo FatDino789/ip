@@ -26,6 +26,21 @@ dependencies {
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
+
+    // The javafx {} block above only bundles native libraries for whichever
+    // platform Gradle is running on. Add every other platform's natives
+    // explicitly too, so the single shadow jar we release runs on Windows,
+    // Linux and both Mac architectures, not just the machine that built it.
+    // (JavaFX picks the matching native library for the current OS/arch at
+    // startup, so it's safe to have all of them on the classpath at once.)
+    String javafxVersion = '23.0.2'
+    List<String> javafxPlatforms = ['win', 'mac', 'mac-aarch64', 'linux', 'linux-aarch64']
+    List<String> javafxModules = ['base', 'graphics', 'controls', 'fxml']
+    for (platform in javafxPlatforms) {
+        for (module in javafxModules) {
+            implementation "org.openjfx:javafx-${module}:${javafxVersion}:${platform}"
+        }
+    }
 }
 
 test {
