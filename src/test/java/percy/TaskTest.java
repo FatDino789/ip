@@ -80,4 +80,29 @@ public class TaskTest {
         Deadline d = new Deadline("return book", LocalDate.of(2019, 10, 15));
         assertEquals("return book", d.getRawDescription());
     }
+
+    // ---- in-place edits (C-Update) ---------------------------------------
+
+    @Test
+    public void setDescription_changesTheRenderedDescription() {
+        Deadline d = new Deadline("return book", LocalDate.of(2019, 10, 15));
+        d.setDescription("return the library book");
+        assertEquals("return the library book (by: Oct 15 2019)", d.getDescription());
+    }
+
+    @Test
+    public void setBy_changesOnlyTheDueDate() {
+        Deadline d = new Deadline("return book", LocalDate.of(2019, 10, 15));
+        d.setBy(LocalDate.of(2019, 12, 1));
+        assertEquals(LocalDate.of(2019, 12, 1), d.getBy());
+        assertEquals("D | 0 | return book | 2019-12-01", d.toFileFormat());
+    }
+
+    @Test
+    public void setTo_changesOnlyTheEndDate() {
+        Event e = new Event("project", LocalDate.of(2019, 10, 10), LocalDate.of(2019, 10, 12));
+        e.setTo(LocalDate.of(2019, 10, 20));
+        assertEquals(LocalDate.of(2019, 10, 10), e.getFrom());
+        assertEquals("project (from: Oct 10 2019 to: Oct 20 2019)", e.getDescription());
+    }
 }

@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
  * A task that must be done by a specific date.
  */
 public class Deadline extends Task {
-    private final LocalDate by;
+    private LocalDate by;
 
     /**
      * Creates a deadline.
@@ -17,6 +17,25 @@ public class Deadline extends Task {
      */
     public Deadline(String description, LocalDate by) {
         super(description);
+        assert by != null : "deadline date should not be null";
+        this.by = by;
+    }
+
+    /**
+     * Returns the due date.
+     *
+     * @return the date this deadline is due
+     */
+    public LocalDate getBy() {
+        return by;
+    }
+
+    /**
+     * Replaces the due date.
+     *
+     * @param by the new due date
+     */
+    public void setBy(LocalDate by) {
         assert by != null : "deadline date should not be null";
         this.by = by;
     }

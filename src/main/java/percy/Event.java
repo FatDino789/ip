@@ -7,8 +7,8 @@ import java.time.format.DateTimeFormatter;
  * A task that spans a period between two dates.
  */
 public class Event extends Task {
-    private final LocalDate from;
-    private final LocalDate to;
+    private LocalDate from;
+    private LocalDate to;
 
     /**
      * Creates an event.
@@ -22,6 +22,44 @@ public class Event extends Task {
         assert from != null : "event start date should not be null";
         assert to != null : "event end date should not be null";
         this.from = from;
+        this.to = to;
+    }
+
+    /**
+     * Returns the start date.
+     *
+     * @return the date this event starts
+     */
+    public LocalDate getFrom() {
+        return from;
+    }
+
+    /**
+     * Returns the end date.
+     *
+     * @return the date this event ends
+     */
+    public LocalDate getTo() {
+        return to;
+    }
+
+    /**
+     * Replaces the start date.
+     *
+     * @param from the new start date
+     */
+    public void setFrom(LocalDate from) {
+        assert from != null : "event start date should not be null";
+        this.from = from;
+    }
+
+    /**
+     * Replaces the end date.
+     *
+     * @param to the new end date
+     */
+    public void setTo(LocalDate to) {
+        assert to != null : "event end date should not be null";
         this.to = to;
     }
 

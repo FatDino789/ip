@@ -123,6 +123,9 @@ public class Percy {
             return addTask(Parser.parseDeadline(command.getArguments()));
         case EVENT:
             return addTask(Parser.parseEvent(command.getArguments()));
+        case UPDATE:
+            ui.showUpdated(applyUpdate(Parser.parseUpdate(command.getArguments())));
+            return false;
         default:
             throw new PercyException("OOPS!!! I'm sorry, but I don't know what that means :-(");
         }
@@ -146,6 +149,44 @@ public class Percy {
     private Task setDoneStatus(String arguments, boolean done) throws PercyException {
         Task task = tasks.get(resolveIndex(arguments));
         task.setDone(done);
+        storage.save(tasks);
+        return task;
+    }
+
+    /**
+     * Applies an {@code update} to an existing task in place, persists the
+     * change, and returns the updated task.
+     *
+     * @throws PercyException if the task number is out of range, or a date
+     *     field does not apply to that task's type
+     */
+    private Task applyUpdate(Parser.UpdateSpec spec) throws PercyException {
+        if (!tasks.isValidIndex(spec.getIndex())) {
+            throw new PercyException("OOPS!!! That task number doesn't exist.");
+        }
+        Task task = tasks.get(spec.getIndex());
+
+        // Validate first, so a rejected update leaves the task untouched.
+        if (spec.getBy() != null && !(task instanceof Deadline)) {
+            throw new PercyException("OOPS!!! Only a deadline has a '/by' date.");
+        }
+        if ((spec.getFrom() != null || spec.getTo() != null) && !(task instanceof Event)) {
+            throw new PercyException("OOPS!!! Only an event has '/from' and '/to' dates.");
+        }
+
+        if (spec.getDescription() != null) {
+            task.setDescription(spec.getDescription());
+        }
+        if (spec.getBy() != null) {
+            ((Deadline) task).setBy(spec.getBy());
+        }
+        if (spec.getFrom() != null) {
+            ((Event) task).setFrom(spec.getFrom());
+        }
+        if (spec.getTo() != null) {
+            ((Event) task).setTo(spec.getTo());
+        }
+
         storage.save(tasks);
         return task;
     }
