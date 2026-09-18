@@ -63,9 +63,12 @@ public class MainWindow {
             return;
         }
         String response = percy.getResponse(input);
+        DialogBox percyReply = percy.wasLastResponseError()
+                ? DialogBox.getErrorDialog(response, percyImage)
+                : DialogBox.getPercyDialog(response, percyImage);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getPercyDialog(response, percyImage)
+                percyReply
         );
         userInput.clear();
         if (percy.isExit()) {

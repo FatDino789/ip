@@ -69,4 +69,27 @@ public class DialogBox extends HBox {
         db.flip();
         return db;
     }
+
+    /**
+     * Creates a (flipped) dialog box for one of Percy's error replies,
+     * restyled in red so mistakes stand out from ordinary replies at a glance.
+     *
+     * @param text Percy's error message
+     * @param img Percy's avatar
+     * @return the dialog box
+     */
+    public static DialogBox getErrorDialog(String text, Image img) {
+        DialogBox db = new DialogBox(text, img);
+        db.flip();
+        db.markAsError();
+        return db;
+    }
+
+    /** Restyles the text bubble to stand out as an error. */
+    private void markAsError() {
+        dialog.setStyle("-fx-font-family: 'monospace'; -fx-text-fill: #7a1f1f; "
+                + "-fx-background-color: #fdecec; -fx-border-color: #d64545; "
+                + "-fx-border-width: 1.5; -fx-padding: 7; -fx-background-radius: 8; "
+                + "-fx-border-radius: 8;");
+    }
 }

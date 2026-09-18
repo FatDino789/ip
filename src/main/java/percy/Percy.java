@@ -21,6 +21,7 @@ public class Percy {
     private final Storage storage;
     private TaskList tasks;
     private boolean isExit = false;
+    private boolean lastResponseWasError = false;
 
     /**
      * Creates a Percy instance that persists tasks to {@code filePath}.
@@ -60,12 +61,25 @@ public class Percy {
      * @return Percy's response text
      */
     public String getResponse(String input) {
+        lastResponseWasError = false;
         try {
             isExit = execute(Parser.parse(input));
         } catch (PercyException e) {
+            lastResponseWasError = true;
             ui.showError(e.getMessage());
         }
         return ui.flush().strip();
+    }
+
+    /**
+     * Returns whether the most recent {@link #getResponse} call reported an
+     * error (e.g. an unknown command or bad argument). The GUI uses this to
+     * highlight that reply so mistakes are easy to spot.
+     *
+     * @return true if the last response was an error message
+     */
+    public boolean wasLastResponseError() {
+        return lastResponseWasError;
     }
 
     /**
